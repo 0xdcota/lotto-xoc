@@ -65,7 +65,7 @@ contract Lottery is Ownable {
         _enter(player);
     }
 
-    function pickWinner() public onlyOwner {
+    function pickWinner() external onlyOwner {
         require(players.length > 0, "No players in the lottery");
         require(block.number >= lastWinnerBlock + 40384, "Can only pick a winner every 7 days");
 
@@ -82,6 +82,12 @@ contract Lottery is Ownable {
         lastWinnerBlock = block.number;
 
         emit WinnerPicked(winner, contractBalance);
+    }
+
+    function updateEntryFee(uint256 newEntryFee) external onlyOwner {
+        require(newEntryFee > 0, 'zero value input!');
+        entryFee = newEntryFee;
+        emit EntryFeeChange(newEntryFee);
     }
 
     function _enter(address player) private {
